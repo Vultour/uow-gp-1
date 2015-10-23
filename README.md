@@ -9,14 +9,14 @@ Please notify the group before you upload a change, make appropriate optional ex
 We are all on the Whatsapp group so don't hesistate to send a message, most work will be uploaded here.
 
 #Team members (if you forget)
-Martin
+**Abubaker** [Team Leader]
 
-Harsh
+**Harsh** [*fill in*]
 
-Romina
+**Martin** [Lead Developer]
 
-Abubaker
+**Niral** [GUI Designer]
 
-Tulga
+**Romina** [*fill in*]
 
-Niral
+**Tulga** [Software Tester]
