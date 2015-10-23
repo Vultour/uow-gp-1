@@ -11,12 +11,12 @@ We are all on the Whatsapp group so don't hesistate to send a message, most work
 #Team members (if you forget)
 **Abubaker** [Team Leader]
 
-**Harsh** [*fill in*]
+**Harsh** [*Software Engineer*]
 
 **Martin** [Lead Developer]
 
 **Niral** [GUI Designer]
 
-**Romina** [*fill in*]
+**Romina** [*Chief System Architect*]
 
 **Tulga** [Software Tester]
