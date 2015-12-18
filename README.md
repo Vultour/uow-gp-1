@@ -5,9 +5,7 @@ This is the repository for the Software Group Development Project.
 #GITHUB RULES
 
 Please notify the group before you upload a change, make appropriate optional extended descriptions. If you do not understand how to use GitHub, contact either
-**Abubaker, Harsh, Martin** or **Niral**
-
-We are all on the Whatsapp group so don't hesitate to send a message, most work will be uploaded here.
+**Abubaker, Harsh, Martin** or **Niral**.
 
 #Additional Documents
 [Architecture decisions [Google Docs]](https://docs.google.com/a/my.westminster.ac.uk/document/d/1GGT6WK9evuDKc2JazUJtfi_85MhwwiLHgL54npDbii4/edit?usp=sharing)
