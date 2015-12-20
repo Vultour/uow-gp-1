@@ -13,13 +13,13 @@ Please notify the group before you upload a change, make appropriate optional ex
 #Team members (if you forget)
 **Abubaker** [Team Leader]
 
-**Harsh** [*Software Engineer*]
+**Harsh** [Software Engineer]
 
 **Martin** [Lead Developer]
 
 **Niral** [GUI Designer]
 
-**Romina** [*Chief System Architect*]
+**Romina** [Chief System Architect]
 
 **Tulga** [Software Tester]
 
@@ -45,6 +45,9 @@ In order to maintain this contribution level, you must not do the following:
   * Failure to do so will result in penalties and will reflect at the end of the
     module as this is specifically tracking each member's tasks. This will again
     be discussed by the four members mentioned above.
+  * We will be using the bugtracking software Mantis for this. You can find our
+    instance on http://sdgp.nydus.eu - you'll be able to find all issues (tasks)
+    assigned to you there.
 
 It is perfectly fine to ask for help. But to wait on others to do it for you will
 not be tolerated. In the group summary (weekly) this will be reflected again.
