@@ -1,32 +1,31 @@
 package perfmon.agent.util;
 
 public class IPAddress{
-	private byte[] bytes;
+	private int[] bytes;
 
 
 	public IPAddress(String ip) throws IllegalArgumentException{
-		String[] b = ip.split(".");
+		String[] b = ip.split("\\.");
 		if (b.length != 4){
 			throw new IllegalArgumentException();
 		}
 
-		this.bytes = new byte[4];
+		this.bytes = new int[4];
 		for (int i = 0; i < 4; i++){
-			this.bytes[i] = Byte.parseByte(b[i]);
+			this.bytes[i] = Integer.parseInt(b[i]);
 		}
 	}
 
-	public IPAddress(byte[] ip) throws IllegalArgumentException{
+	public IPAddress(int[] ip) throws IllegalArgumentException{
 		if (ip.length != 4){
 			throw new IllegalArgumentException();
 		}
 		
-		this.bytes = new byte[4];
 		this.bytes = ip;
 	}
 
-	public IPAddress(byte b1, byte b2, byte b3, byte b4){
-		this.bytes = new byte[4];
+	public IPAddress(int b1, int b2, int b3, int b4){
+		this.bytes = new int[4];
 		this.bytes[0] = b1;
 		this.bytes[1] = b2;
 		this.bytes[2] = b3;
@@ -43,5 +42,5 @@ public class IPAddress{
 		return s.toString();
 	}
 
-	public byte[] toArray(){ return this.bytes; }
+	public int[] toArray(){ return this.bytes; }
 }

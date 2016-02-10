@@ -1,9 +1,9 @@
 package perfmon.agent.util;
 
 public class MemoryInfo{
-	private int total;
-	private int used;
-	private int cached;
+	private long total;
+	private long used;
+	private long cached;
 
 
 	public MemoryInfo(){
@@ -19,11 +19,11 @@ public class MemoryInfo{
 	}
 
 
-	public int getTotal()	{ return this.total; }
-	public int getUsed()	{ return this.used; }
-	public int getCached()	{ return this.cached; }
+	public long getTotal()	{ return this.total; }
+	public long getUsed()	{ return this.used; }
+	public long getCached()	{ return this.cached; }
 
-	public void setTotal(int t)	{ this.total = t; }
-	public void setUsed(int u)	{ this.used = ((u > this.total) && (this.total > 0))?(this.total):(u); }
-	public void setCached(int c)	{ this.cached = ((c > this.total) && (this.total > 0))?(this.total):(c); }
+	public void setTotal(long t)	{ this.total = t; }
+	public void setUsed(long u)	{ this.used = ((u > this.total) && (this.total > 0))?(this.total):(u); }
+	public void setCached(long c)	{ this.cached = ((c > this.total) && (this.total > 0))?(this.total):(c); }
 }

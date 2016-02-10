@@ -17,9 +17,9 @@ abstract public class AgentBase{
 	public AgentBase(int nodeId, String dbAddress, String dbUser, String dbPassword){
 		System.out.println("INF: Initializing");
 
-		this.lastMinute = 0;
-		//this.database = new DatabaseAgent(dbAddress, dbUser, dbPassword);
-		this.sigar = new Sigar();
+		this.lastMinute	= 0;
+		//this.database	= new DatabaseAgent(dbAddress, dbUser, dbPassword);
+		this.sigar	= new Sigar();
 		this.cpu	= new CpuInfo();
 		this.memory	= new MemoryInfo();
 		this.system	= new SystemInfo();
@@ -39,12 +39,36 @@ abstract public class AgentBase{
 			this.pause();
 
 			this.getCpu();
+			this.getMemory();
+			this.getHdd();
+			this.getSystem();
 
-			System.out.println("CPU Metrics:");
-			System.out.println("  Utilization : " + Double.toString(this.cpu.getUtilization()));
-			System.out.println("  Cores       : " + Integer.toString(this.cpu.getCores()));
-			System.out.println("  Model       : " + this.cpu.getModel());
-			System.out.println("  Manufacturer: " + this.cpu.getManufacturer());
+			if (Config.AGENT_DEBUG){
+				System.out.println("CPU Metrics:");
+				System.out.println("  Utilization : " + Double.toString(this.cpu.getUtilization()));
+				System.out.println("  Cores       : " + Integer.toString(this.cpu.getCores()));
+				System.out.println("  Model       : " + this.cpu.getModel());
+				System.out.println("  Manufacturer: " + this.cpu.getManufacturer());
+				System.out.println("Memory Metrics:");
+				System.out.println("  Total: " + Long.toString(this.memory.getTotal()));
+				System.out.println("  Used : " + Long.toString(this.memory.getUsed()));
+				System.out.println("HDD Metrics:");
+				System.out.println("  Detected drives: " + Integer.toString(this.hdd.getHardDrives().size()));
+				/*
+				for (String key: this.hdd.getHardDrives().keySet()){
+					System.out.println("  Device name: " + this.hdd.getHardDrives().get(key).getName());
+					System.out.println("  Total KB   : " + Long.toString(this.hdd.getHardDrives().get(key).getTotal()));
+					System.out.println("  Used KB    : " + Long.toString(this.hdd.getHardDrives().get(key).getUsed()));
+					System.out.println("  ---");
+				}
+				*/
+				System.out.println("System info:");
+				System.out.println("  Hostname  : " + this.system.getHostname());
+				System.out.println("  OS        : " + this.system.getOs());
+				System.out.println("  IP Address: " + this.system.getIp().toString());
+				System.out.println("Process metrics:");
+				System.out.println("  Unavailable");
+			}
 		}
 	}
 
@@ -55,25 +79,60 @@ abstract public class AgentBase{
 			this.cpu.setManufacturer(this.sigar.getCpuInfoList()[0].getVendor());
 			this.cpu.setCores(this.sigar.getCpuInfoList()[0].getTotalCores());
 		} catch (Exception e){
-			System.out.println("FTL: Exception in AgentBase::getCpu()");
-			System.exit(0);
+			System.out.println("FTL: Exception in AgentBase::getCpu() - " + e.toString());
+			System.exit(1);
 		}
 	}
 
 	private void getMemory(){
-		// TODO
+		try{
+			this.memory.setTotal(this.sigar.getMem().getTotal());
+			this.memory.setUsed(this.sigar.getMem().getUsed()); // TODO: Compare with .getActualUsed()!
+			// this.memory.setCached(); // SIGAR does not gather this information - try JNI
+		} catch (Exception e){
+			System.out.println("FTL: Exception in AgentBase::getMemory() - " + e.toString());
+			System.exit(1);
+		}
 	}
 
 	private void getHdd(){
-		// TODO
+		try{
+			org.hyperic.sigar.FileSystem[] fs = this.sigar.getFileSystemList();
+			for (int i = 0; i < fs.length; i++){
+				org.hyperic.sigar.FileSystemUsage fsu = this.sigar.getFileSystemUsage(fs[i].getDirName());
+				if (fsu.getTotal() > 0){
+					this.hdd.addHardDrive(
+						fs[i].getDevName() + " [" + fs[i].getDirName() + "]",
+						fsu.getTotal(),
+						fsu.getUsed()
+					);
+				}
+			}
+		} catch (Exception e){
+			System.out.println("FTL: Exception in AgentBase::getHdd() - " + e.toString());
+			System.exit(1);
+		}
 	}
 
 	private void getSystem(){
-		// TODO
+		try{
+			this.system.setHostname(this.sigar.getFQDN());
+			this.system.setOs(System.getProperty("os.name"));
+			this.system.setIp(this.sigar.getNetInterfaceConfig().getAddress());
+			
+		} catch (Exception e){
+			System.out.println("FTL: Exception in AgentBase::getSystem() - " + e.toString());
+			System.exit(1);
+		}
 	}
 
 	private void getProcesses(){
-		// TODO
+		try{
+			// TODO
+		} catch (Exception e){
+			System.out.println("FTL: Exception in AgentBase::getProcesses() - " + e.toString());
+			System.exit(1);
+		}
 	}
 
 	private void pause(){

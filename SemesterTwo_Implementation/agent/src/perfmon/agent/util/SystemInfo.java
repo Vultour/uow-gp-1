@@ -25,7 +25,7 @@ public class SystemInfo{
 
 	public void setHostname(String h)	{ this.hostname = h; }
 	public void setIp(String ip)		{ this.ip = new IPAddress(ip); }
-	public void setIp(byte[] ip)		{ this.ip = new IPAddress(ip); }
-	public void setIp(byte b1, byte b2, byte b3, byte b4){ this.ip = new IPAddress(b1, b2, b3, b4); }
+	public void setIp(int[] ip)		{ this.ip = new IPAddress(ip); }
+	public void setIp(int b1, int b2, int b3, int b4){ this.ip = new IPAddress(b1, b2, b3, b4); }
 	public void setOs(String os)		{ this.os = os; }
 }
