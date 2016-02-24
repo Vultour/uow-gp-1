@@ -1,12 +1,13 @@
 package perfmon.agent.base;
 
 import perfmon.agent.util.*;
+import perfmon.database.DatabaseAgent;
 import java.time.Instant;
 import org.hyperic.sigar.Sigar;
 
 abstract public class AgentBase{
 	private Sigar sigar;
-	//private DatabaseAgent database;
+	private DatabaseAgent database;
 	private long lastMinute;
 	private CpuInfo cpu;
 	private MemoryInfo memory;
@@ -18,7 +19,7 @@ abstract public class AgentBase{
 		System.out.println("INF: Initializing");
 
 		this.lastMinute	= 0;
-		//this.database	= new DatabaseAgent(dbAddress, dbUser, dbPassword);
+		this.database	= new DatabaseAgent(dbAddress, Config.DATABASE_PORT, Config.DATABASE_NAME, dbUser, dbPassword);
 		this.sigar	= new Sigar();
 		this.cpu	= new CpuInfo();
 		this.memory	= new MemoryInfo();
@@ -26,10 +27,34 @@ abstract public class AgentBase{
 		this.hdd	= new HardDriveInfo();
 		this.process	= new ProcessInfo();
 
-		try{ Thread.sleep(1500); } catch (Exception e){}
+		Runtime.getRuntime().addShutdownHook(new AgentShutdownThread(this){
+			public void run(){
+				try{
+					System.out.println("Running shutdown hook");
+					this.agent.shutdown();	
+				} catch (Exception e){
+					e.printStackTrace();
+					System.out.println("FATAL: Exception in JVM shutdown hook [AgentShutdownThread]");
+					System.exit(1);
+				}
+			}
+		});
+
+		try{ Thread.sleep(1500); } catch (Exception e){ e.printStackTrace(); }
 
 		System.out.println("INF: Init finished");
 		this.run();
+	}
+
+	public void shutdown(){
+		try{
+			this.database.close();
+			this.sigar.close();
+		} catch (Exception e){
+			e.printStackTrace();
+			System.out.println("FATAL: Exception in AgentBase::shutdown()");
+			System.exit(1);
+		}
 	}
 
 	private void run(){
@@ -79,6 +104,7 @@ abstract public class AgentBase{
 			this.cpu.setManufacturer(this.sigar.getCpuInfoList()[0].getVendor());
 			this.cpu.setCores(this.sigar.getCpuInfoList()[0].getTotalCores());
 		} catch (Exception e){
+			e.printStackTrace();
 			System.out.println("FTL: Exception in AgentBase::getCpu() - " + e.toString());
 			System.exit(1);
 		}
@@ -90,6 +116,7 @@ abstract public class AgentBase{
 			this.memory.setUsed(this.sigar.getMem().getUsed()); // TODO: Compare with .getActualUsed()!
 			// this.memory.setCached(); // SIGAR does not gather this information - try JNI
 		} catch (Exception e){
+			e.printStackTrace();
 			System.out.println("FTL: Exception in AgentBase::getMemory() - " + e.toString());
 			System.exit(1);
 		}
@@ -99,16 +126,21 @@ abstract public class AgentBase{
 		try{
 			org.hyperic.sigar.FileSystem[] fs = this.sigar.getFileSystemList();
 			for (int i = 0; i < fs.length; i++){
-				org.hyperic.sigar.FileSystemUsage fsu = this.sigar.getFileSystemUsage(fs[i].getDirName());
-				if (fsu.getTotal() > 0){
-					this.hdd.addHardDrive(
-						fs[i].getDevName() + " [" + fs[i].getDirName() + "]",
-						fsu.getTotal(),
-						fsu.getUsed()
-					);
+				try{
+					org.hyperic.sigar.FileSystemUsage fsu = this.sigar.getFileSystemUsage(fs[i].getDirName());
+					if (fsu.getTotal() > 0){
+						this.hdd.addHardDrive(
+							fs[i].getDevName() + " [" + fs[i].getDirName() + "]",
+							fsu.getTotal(),
+							fsu.getUsed()
+						);
+					}
+				} catch (org.hyperic.sigar.SigarException e){
+					System.out.println("WARN: Detected a HDD that cannot be accessed (insufficient permissions): " + fs[i].getDirName());
 				}
 			}
 		} catch (Exception e){
+			e.printStackTrace();
 			System.out.println("FTL: Exception in AgentBase::getHdd() - " + e.toString());
 			System.exit(1);
 		}
@@ -121,6 +153,7 @@ abstract public class AgentBase{
 			this.system.setIp(this.sigar.getNetInterfaceConfig().getAddress());
 			
 		} catch (Exception e){
+			e.printStackTrace();
 			System.out.println("FTL: Exception in AgentBase::getSystem() - " + e.toString());
 			System.exit(1);
 		}
@@ -130,6 +163,7 @@ abstract public class AgentBase{
 		try{
 			// TODO
 		} catch (Exception e){
+			e.printStackTrace();
 			System.out.println("FTL: Exception in AgentBase::getProcesses() - " + e.toString());
 			System.exit(1);
 		}
@@ -146,6 +180,7 @@ abstract public class AgentBase{
 				Thread.sleep(Config.AGENT_CYCLE_PAUSE);
 			}
 			catch (Exception e){
+				e.printStackTrace();
 				System.out.println("FATAL: Interrupt exception at AgentBase::pause()");
 				System.exit(1);
 			}

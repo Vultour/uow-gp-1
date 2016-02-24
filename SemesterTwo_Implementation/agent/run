@@ -1,9 +1,10 @@
 #!/bin/bash
 
-CLASSPATH='.:src/:lib/:lib/sigar.jar'
+CLASSPATH='.:src/:lib/:lib/sigar.jar:lib/mysql-connector-java.jar'
 MAINCLASS='Agent'
 ENTRYPOINT="src/$MAINCLASS.java"
 
+javac -cp $CLASSPATH src/perfmon/database/*.java
 javac -cp $CLASSPATH src/perfmon/agent/util/*.java
 javac -cp $CLASSPATH src/perfmon/agent/base/*.java
 javac -cp $CLASSPATH src/perfmon/agent/*.java
