@@ -16,7 +16,7 @@ abstract public class AgentBase{
 	private ProcessInfo process;
 
 	public AgentBase(int nodeId, String dbAddress, String dbUser, String dbPassword){
-		System.out.println("INF: Initializing");
+		Log.$(Log.INFO, "Initializing");
 
 		this.lastMinute	= 0;
 		this.database	= new DatabaseAgent(dbAddress, Config.DATABASE_PORT, Config.DATABASE_NAME, dbUser, dbPassword);
@@ -30,11 +30,11 @@ abstract public class AgentBase{
 		Runtime.getRuntime().addShutdownHook(new AgentShutdownThread(this){
 			public void run(){
 				try{
-					System.out.println("Running shutdown hook");
+					Log.$(Log.DEBUG, "Entered JVM shutdown hook thread");
 					this.agent.shutdown();	
 				} catch (Exception e){
 					e.printStackTrace();
-					System.out.println("FATAL: Exception in JVM shutdown hook [AgentShutdownThread]");
+					Log.$(Log.FATAL, "Exception in JVM shutdown hook thread [AgentShutdownThread]");
 					System.exit(1);
 				}
 			}
@@ -42,23 +42,24 @@ abstract public class AgentBase{
 
 		try{ Thread.sleep(1500); } catch (Exception e){ e.printStackTrace(); }
 
-		System.out.println("INF: Init finished");
+		Log.$(Log.INFO, "Init finished");
 		this.run();
 	}
 
 	public void shutdown(){
 		try{
+			Log.$(Log.INFO, "Agent shutting down");
 			this.database.close();
 			this.sigar.close();
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FATAL: Exception in AgentBase::shutdown()");
+			Log.$(Log.FATAL, "Exception in AgentBase::shutdown()");
 			System.exit(1);
 		}
 	}
 
 	private void run(){
-		System.out.println("INF: Agent started");
+		Log.$(Log.INFO, "Agent started");
 
 		while(true){
 			this.pause();
@@ -68,32 +69,7 @@ abstract public class AgentBase{
 			this.getHdd();
 			this.getSystem();
 
-			if (Config.AGENT_DEBUG){
-				System.out.println("CPU Metrics:");
-				System.out.println("  Utilization : " + Double.toString(this.cpu.getUtilization()));
-				System.out.println("  Cores       : " + Integer.toString(this.cpu.getCores()));
-				System.out.println("  Model       : " + this.cpu.getModel());
-				System.out.println("  Manufacturer: " + this.cpu.getManufacturer());
-				System.out.println("Memory Metrics:");
-				System.out.println("  Total: " + Long.toString(this.memory.getTotal()));
-				System.out.println("  Used : " + Long.toString(this.memory.getUsed()));
-				System.out.println("HDD Metrics:");
-				System.out.println("  Detected drives: " + Integer.toString(this.hdd.getHardDrives().size()));
-				/*
-				for (String key: this.hdd.getHardDrives().keySet()){
-					System.out.println("  Device name: " + this.hdd.getHardDrives().get(key).getName());
-					System.out.println("  Total KB   : " + Long.toString(this.hdd.getHardDrives().get(key).getTotal()));
-					System.out.println("  Used KB    : " + Long.toString(this.hdd.getHardDrives().get(key).getUsed()));
-					System.out.println("  ---");
-				}
-				*/
-				System.out.println("System info:");
-				System.out.println("  Hostname  : " + this.system.getHostname());
-				System.out.println("  OS        : " + this.system.getOs());
-				System.out.println("  IP Address: " + this.system.getIp().toString());
-				System.out.println("Process metrics:");
-				System.out.println("  Unavailable");
-			}
+			if (Config.AGENT_DEBUG){ this.printMetrics(); }
 		}
 	}
 
@@ -105,7 +81,7 @@ abstract public class AgentBase{
 			this.cpu.setCores(this.sigar.getCpuInfoList()[0].getTotalCores());
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FTL: Exception in AgentBase::getCpu() - " + e.toString());
+			Log.$(Log.FATAL, "Exception in AgentBase::getCpu() - " + e.toString());
 			System.exit(1);
 		}
 	}
@@ -117,7 +93,7 @@ abstract public class AgentBase{
 			// this.memory.setCached(); // SIGAR does not gather this information - try JNI
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FTL: Exception in AgentBase::getMemory() - " + e.toString());
+			Log.$(Log.FATAL, "Exception in AgentBase::getMemory() - " + e.toString());
 			System.exit(1);
 		}
 	}
@@ -127,6 +103,22 @@ abstract public class AgentBase{
 			org.hyperic.sigar.FileSystem[] fs = this.sigar.getFileSystemList();
 			for (int i = 0; i < fs.length; i++){
 				try{
+					boolean next = false;
+					for (int j = 0; j < Config.AGENT_FILTER_HDD_DIR.length; j++){
+						if (fs[i].getDirName().contains(Config.AGENT_FILTER_HDD_DIR[j])){
+							next = true;
+							Log.$(Log.DEBUG, "HDD filter match (path): '" + fs[i].getDirName() + " - excluding from scan");
+						}
+					}
+					for (int j = 0; j < Config.AGENT_FILTER_HDD_FS.length; j++){
+						if (fs[i].getDevName().contains(Config.AGENT_FILTER_HDD_FS[j])){
+							next = true;
+							Log.$(Log.DEBUG, "HDD filter match (filesystem): '" + fs[i].getDirName() + " - excluding from scan");
+						}
+					}
+					if (next){
+						continue;
+					}
 					org.hyperic.sigar.FileSystemUsage fsu = this.sigar.getFileSystemUsage(fs[i].getDirName());
 					if (fsu.getTotal() > 0){
 						this.hdd.addHardDrive(
@@ -136,12 +128,12 @@ abstract public class AgentBase{
 						);
 					}
 				} catch (org.hyperic.sigar.SigarException e){
-					System.out.println("WARN: Detected a HDD that cannot be accessed (insufficient permissions): " + fs[i].getDirName());
+					Log.$(Log.DEBUG, "Detected an inaccessible HDD (insufficient permissions) - " + fs[i].getDirName() + " - excluding from scan");
 				}
 			}
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FTL: Exception in AgentBase::getHdd() - " + e.toString());
+			Log.$(Log.FATAL, "Exception in AgentBase::getHdd() - " + e.toString());
 			System.exit(1);
 		}
 	}
@@ -154,7 +146,7 @@ abstract public class AgentBase{
 			
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FTL: Exception in AgentBase::getSystem() - " + e.toString());
+			Log.$(Log.FATAL, "Exception in AgentBase::getSystem() - " + e.toString());
 			System.exit(1);
 		}
 	}
@@ -164,7 +156,7 @@ abstract public class AgentBase{
 			// TODO
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FTL: Exception in AgentBase::getProcesses() - " + e.toString());
+			Log.$(Log.FATAL, "Exception in AgentBase::getProcesses() - " + e.toString());
 			System.exit(1);
 		}
 	}
@@ -174,18 +166,47 @@ abstract public class AgentBase{
 		while ((Instant.now().getEpochSecond() / 60) <= this.lastMinute){
 			try{
 				if (Config.AGENT_DEBUG && debugMessage){
-					System.out.println("DBG: Pausing until next cycle");
+					Log.$(Log.DEBUG, "Pausing until next cycle");
 					debugMessage = false;
 				}
 				Thread.sleep(Config.AGENT_CYCLE_PAUSE);
 			}
 			catch (Exception e){
 				e.printStackTrace();
-				System.out.println("FATAL: Interrupt exception at AgentBase::pause()");
+				Log.$(Log.FATAL, "Interrupt exception at AgentBase::pause()");
 				System.exit(1);
 			}
 		}
 		
 		this.lastMinute = (Instant.now().getEpochSecond() / 60);
+	}
+
+	private void printMetrics(){
+		Log.$(Log.DEBUG, "CPU Metrics:");
+		Log.$(Log.DEBUG, "  Utilization : " + Double.toString(this.cpu.getUtilization()));
+		Log.$(Log.DEBUG, "  Cores       : " + Integer.toString(this.cpu.getCores()));
+		Log.$(Log.DEBUG, "  Model       : " + this.cpu.getModel());
+		Log.$(Log.DEBUG, "  Manufacturer: " + this.cpu.getManufacturer());
+
+		Log.$(Log.DEBUG, "Memory Metrics:");
+		Log.$(Log.DEBUG, "  Total: " + Long.toString(this.memory.getTotal()));
+		Log.$(Log.DEBUG, "  Used : " + Long.toString(this.memory.getUsed()));
+
+		Log.$(Log.DEBUG, "HDD Metrics:");
+		Log.$(Log.DEBUG, "  Detected drives: " + Integer.toString(this.hdd.getHardDrives().size()));
+		for (String key: this.hdd.getHardDrives().keySet()){
+			Log.$(Log.DEBUG, "  Device name: " + this.hdd.getHardDrives().get(key).getName());
+			Log.$(Log.DEBUG, "  Total KB   : " + Long.toString(this.hdd.getHardDrives().get(key).getTotal()));
+			Log.$(Log.DEBUG, "  Used KB    : " + Long.toString(this.hdd.getHardDrives().get(key).getUsed()));
+			Log.$(Log.DEBUG, "  ---");
+		}
+		
+		Log.$(Log.DEBUG, "System info:");
+		Log.$(Log.DEBUG, "  Hostname  : " + this.system.getHostname());
+		Log.$(Log.DEBUG, "  OS        : " + this.system.getOs());
+		Log.$(Log.DEBUG, "  IP Address: " + this.system.getIp().toString());
+
+		Log.$(Log.DEBUG, "Process metrics:");
+		Log.$(Log.DEBUG, "  Unavailable");
 	}
 }

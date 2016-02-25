@@ -1,5 +1,7 @@
 package perfmon.database;
 
+import perfmon.agent.util.Log;
+
 import java.util.ArrayList;
 import java.sql.*;
 
@@ -18,7 +20,7 @@ public abstract class DatabaseWrapper{
 			this.statement = this.connection.createStatement();
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FATAL: Exception in DatabaseWrapper::__construct");
+			Log.$(Log.FATAL, "Exception in DatabaseWrapper::__construct() - " + e.toString());
 			System.exit(1);
 		}
 	}
@@ -29,7 +31,7 @@ public abstract class DatabaseWrapper{
 			if (this.connection != null){ this.connection.close(); }
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FATAL: Exception in DatabaseWrapper::close()");
+			Log.$(Log.FATAL, "Exception in DatabaseWrapper::close() - " + e.toString());
 			System.exit(1);
 		}
 	}
@@ -48,7 +50,7 @@ public abstract class DatabaseWrapper{
 			return this.statement.executeQuery(query);
 		} catch (Exception e){
 			e.printStackTrace();
-			System.out.println("FATAL: Exception in DatabaseWrapper::select()");
+			Log.$(Log.FATAL, "Exception in DatabaseWrapper::select() - " + e.toString());
 			this.close();
 			System.exit(1);
 		}
