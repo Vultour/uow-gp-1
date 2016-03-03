@@ -13,19 +13,24 @@ abstract public class AgentBase{
 	private MemoryInfo memory;
 	private SystemInfo system;
 	private HardDriveInfo hdd;
+	private NetworkInfo network;
 	private ProcessInfo process;
 
 	public AgentBase(int nodeId, String dbAddress, String dbUser, String dbPassword){
 		Log.$(Log.INFO, "Initializing");
 
+
 		this.lastMinute	= 0;
-		this.database	= new DatabaseAgent(dbAddress, Config.DATABASE_PORT, Config.DATABASE_NAME, dbUser, dbPassword);
 		this.sigar	= new Sigar();
 		this.cpu	= new CpuInfo();
 		this.memory	= new MemoryInfo();
 		this.system	= new SystemInfo();
 		this.hdd	= new HardDriveInfo();
+		this.network	= new NetworkInfo();
 		this.process	= new ProcessInfo();
+
+		this.getSystem();
+		this.database	= new DatabaseAgent(this.system.getHostname(), dbAddress, Config.DATABASE_PORT, Config.DATABASE_NAME, dbUser, dbPassword);
 
 		Runtime.getRuntime().addShutdownHook(new AgentShutdownThread(this){
 			public void run(){
@@ -61,15 +66,28 @@ abstract public class AgentBase{
 	private void run(){
 		Log.$(Log.INFO, "Agent started");
 
+		boolean firstRun = true;
 		while(true){
 			this.pause();
 
 			this.getCpu();
 			this.getMemory();
 			this.getHdd();
-			this.getSystem();
+			this.getNetwork();
+			this.getProcesses();
+
+			if (firstRun){
+				this.database.init(this.system, this.cpu);
+			}
+
+			this.database.putCpu(this.cpu);
+			this.database.putMemory(this.memory);
+			this.database.putHdd(this.hdd);
+			if (!firstRun){ this.database.putNetwork(this.network); }
+			this.database.putProcess(this.process);
 
 			if (Config.AGENT_DEBUG){ this.printMetrics(); }
+			firstRun = false;
 		}
 	}
 
@@ -151,6 +169,26 @@ abstract public class AgentBase{
 		}
 	}
 
+	private void getNetwork(){
+		try{
+			String[] interfaces = this.sigar.getNetInterfaceList();
+			for (int i = 0; i < interfaces.length; i++){
+				org.hyperic.sigar.NetInterfaceStat nis = this.sigar.getNetInterfaceStat(interfaces[i]);
+				this.network.setInterface(
+					interfaces[i],
+					this.sigar.getNetInterfaceConfig(interfaces[i]).getAddress(),
+					this.sigar.getNetInterfaceConfig(interfaces[i]).getHwaddr(),
+					nis.getRxBytes(),
+					nis.getTxBytes()
+				);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+			Log.$(Log.FATAL, "Exception in AgentBase::getNetwork() - " + e.toString());
+			System.exit(1);
+		}
+	}
+
 	private void getProcesses(){
 		try{
 			// TODO
@@ -194,11 +232,23 @@ abstract public class AgentBase{
 
 		Log.$(Log.DEBUG, "HDD Metrics:");
 		Log.$(Log.DEBUG, "  Detected drives: " + Integer.toString(this.hdd.getHardDrives().size()));
-		for (String key: this.hdd.getHardDrives().keySet()){
-			Log.$(Log.DEBUG, "  Device name: " + this.hdd.getHardDrives().get(key).getName());
-			Log.$(Log.DEBUG, "  Total KB   : " + Long.toString(this.hdd.getHardDrives().get(key).getTotal()));
-			Log.$(Log.DEBUG, "  Used KB    : " + Long.toString(this.hdd.getHardDrives().get(key).getUsed()));
-			Log.$(Log.DEBUG, "  ---");
+		if (Config.AGENT_DEBUG_EXPAND_HDD){
+			for (String key: this.hdd.getHardDrives().keySet()){
+				Log.$(Log.DEBUG, "  Device name: " + this.hdd.getHardDrives().get(key).getName());
+				Log.$(Log.DEBUG, "  Total KB   : " + Long.toString(this.hdd.getHardDrives().get(key).getTotal()));
+				Log.$(Log.DEBUG, "  Used KB    : " + Long.toString(this.hdd.getHardDrives().get(key).getUsed()));
+				Log.$(Log.DEBUG, "  ---");
+			}
+		}
+
+		Log.$(Log.DEBUG, "Network Metrics:");
+		Log.$(Log.DEBUG, "  Detected interfaces: " + Integer.toString(this.network.getInterfaces().size()));
+		if (Config.AGENT_DEBUG_EXPAND_NET){
+			for (String key: this.network.getInterfaces().keySet()){
+				Log.$(Log.DEBUG, "  Interface name: " + this.network.getInterfaces().get(key).getName());
+				Log.$(Log.DEBUG, "  RX Bytes      : " + Long.toString(this.network.getInterfaces().get(key).getRx()));
+				Log.$(Log.DEBUG, "  TX Bytes      : " + Long.toString(this.network.getInterfaces().get(key).getTx()));
+			}
 		}
 		
 		Log.$(Log.DEBUG, "System info:");

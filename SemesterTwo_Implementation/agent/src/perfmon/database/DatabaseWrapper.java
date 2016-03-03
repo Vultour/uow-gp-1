@@ -3,6 +3,7 @@ package perfmon.database;
 import perfmon.agent.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.sql.*;
 
 public abstract class DatabaseWrapper{
@@ -36,16 +37,16 @@ public abstract class DatabaseWrapper{
 		}
 	}
 
-	public ResultSet select(ArrayList<String> columns, ArrayList<String> tables, ArrayList<String> conditions, String append){
+	public ResultSet select(String[] columns, String[] tables, String[] conditions, String append){
 		String query = "SELECT ";
-		query += String.join(",", columns);
+		query += String.join(",", new ArrayList<String>(Arrays.asList(columns)));
 		query += " FROM ";
-		query += String.join(",", tables);
+		query += String.join(",", new ArrayList<String>(Arrays.asList(tables)));
 		if (conditions != null){
 			query += " WHERE ";
-			query += String.join(" AND ", conditions);
+			query += String.join(" AND ", new ArrayList<String>(Arrays.asList(conditions)));
 		}
-		query += append;
+		query += " " + append;
 		try{
 			return this.statement.executeQuery(query);
 		} catch (Exception e){
@@ -58,5 +59,33 @@ public abstract class DatabaseWrapper{
 		return null;
 	}
 
-	public void insert(){}
+	public int insert(String table, String[] columns, String[] values, boolean[] asString, String append){
+		if (values.length != asString.length){
+			Log.$(Log.ERROR, "Error executing DatabaseWrapper::inset() - values[] and asString[] arrays have different lengths");
+			System.exit(1);
+		}
+		ArrayList<String> v = new ArrayList<String>(Arrays.asList(values));
+		for (int i = 0; i < v.size(); i ++){
+			if (asString[i]){ v.set(i, "'" + v.get(i) + "'"); }
+		}
+		String query = "INSERT INTO ";
+		query += table;
+		query += " (";
+	 	query += String.join(",", new ArrayList<String>(Arrays.asList(columns)));
+		query += ") VALUES(";
+		query += String.join(",", v);
+		query += ") ";
+		query += append;
+
+		try{
+			return this.statement.executeUpdate(query);
+		} catch (Exception e){
+			e.printStackTrace();
+			Log.$(Log.FATAL, "Exception in DatabaseWrapper::insert() - " + e.toString());
+			this.close();
+			System.exit(1);
+		}
+
+		return -1;
+	}
 }
