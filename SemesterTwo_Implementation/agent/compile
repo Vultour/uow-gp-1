@@ -7,5 +7,7 @@ javac -cp $CLASSPATH src/perfmon/agent/util/*.java
 javac -cp $CLASSPATH src/perfmon/database/*.java
 javac -cp $CLASSPATH src/perfmon/agent/base/*.java
 javac -cp $CLASSPATH src/perfmon/agent/*.java
-javac -cp $CLASSPATH -d src/perfmon/dashboard/WEB-INF/classes/ src/perfmon/dashboard/Dashboard.java
 javac -cp $CLASSPATH src/*.java
+
+mkdir -p /src/perfmon/dashboard/WEB-INF/classes/
+javac -cp $CLASSPATH -d src/perfmon/dashboard/WEB-INF/classes/ src/perfmon/dashboard/Dashboard.java

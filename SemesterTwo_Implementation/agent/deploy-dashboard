@@ -1,12 +1,6 @@
 #!/bin/bash
 
-javac \
-	-cp ./src/:/usr/share/tomcat/lib/tomcat-servlet-3.0-api.jar:lib/mysql-connector-java.jar \
-	-d src/perfmon/dashboard/WEB-INF/classes/ \
-	src/perfmon/util/*.java \
-	src/perfmon/database/DatabaseWrapper.java \
-	src/perfmon/database/DatabaseDashboard.java \
-	src/perfmon/dashboard/Dashboard.java
+./compile
 
 sudo cp -Rv src/perfmon/dashboard/WEB-INF/* /usr/share/tomcat/webapps/ROOT/WEB-INF/
 
