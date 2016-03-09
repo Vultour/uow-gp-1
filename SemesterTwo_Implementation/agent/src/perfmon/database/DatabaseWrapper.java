@@ -1,6 +1,6 @@
 package perfmon.database;
 
-import perfmon.agent.util.Log;
+import perfmon.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;

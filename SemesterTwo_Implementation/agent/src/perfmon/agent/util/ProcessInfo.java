@@ -14,7 +14,7 @@ public class ProcessInfo{
 
 	public ArrayList<SingleProcessInfo> getProcesses(){ return this.ps; }
 
-	public void addProcess(String user, String name, int pid){
+	public void addProcess(String user, String name, long pid){
 		this.ps.add(new SingleProcessInfo(user, name, pid));
 	}
 }

@@ -1,9 +1,10 @@
-package perfmon.agent.util;
+package perfmon.util;
 
-import perfmon.agent.util.Config;
+import perfmon.util.Config;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.io.FileWriter;
 
 public class Log{
 	public static final int DEBUG	= 0;
@@ -45,7 +46,15 @@ public class Log{
 	}
 
 	private static void putFile(String m){
-		// TODO: Log to file
+		try{
+			FileWriter w = new FileWriter("perfmon.log", true);
+			w.write(m + "\n");
+			w.close();
+		} catch (Exception e){
+			e.printStackTrace();
+			System.out.println("FATAL: Exception in Log::putFile() - " + e.toString());
+			System.exit(1);
+		}
 	}
 
 	private static void putDatabase(String m){

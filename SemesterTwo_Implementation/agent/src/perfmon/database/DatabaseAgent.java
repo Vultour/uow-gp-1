@@ -2,7 +2,7 @@ package perfmon.database;
 
 import perfmon.database.DatabaseWrapper;
 
-import perfmon.agent.util.Log;
+import perfmon.util.Log;
 import perfmon.agent.util.CpuInfo;
 import perfmon.agent.util.MemoryInfo;
 import perfmon.agent.util.SystemInfo;

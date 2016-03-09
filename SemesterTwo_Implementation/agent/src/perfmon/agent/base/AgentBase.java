@@ -1,6 +1,8 @@
 package perfmon.agent.base;
 
 import perfmon.agent.util.*;
+import perfmon.util.Config;
+import perfmon.util.Log;
 import perfmon.database.DatabaseAgent;
 import java.time.Instant;
 import org.hyperic.sigar.Sigar;
@@ -191,7 +193,14 @@ abstract public class AgentBase{
 
 	private void getProcesses(){
 		try{
-			// TODO
+			long[] pids = this.sigar.getProcList();
+			for (int i = 0; i < pids.length; i++){
+				this.process.addProcess(
+					this.sigar.getProcCredName(pids[i]).getUser(),
+					this.sigar.getProcState(pids[i]).getName(),
+					pids[i]
+				);
+			}
 		} catch (Exception e){
 			e.printStackTrace();
 			Log.$(Log.FATAL, "Exception in AgentBase::getProcesses() - " + e.toString());
@@ -257,6 +266,14 @@ abstract public class AgentBase{
 		Log.$(Log.DEBUG, "  IP Address: " + this.system.getIp().toString());
 
 		Log.$(Log.DEBUG, "Process metrics:");
-		Log.$(Log.DEBUG, "  Unavailable");
+		Log.$(Log.DEBUG, "  Running processes: " + Integer.toString(this.process.getProcesses().size()));
+		if (Config.AGENT_DEBUG_EXPAND_PS){
+			for (int i = 0; i < this.process.getProcesses().size(); i++){
+				Log.$(Log.DEBUG, "  Process : " + this.process.getProcesses().get(i).getName());
+				Log.$(Log.DEBUG, "  Username: " + this.process.getProcesses().get(i).getUser());
+				Log.$(Log.DEBUG, "  PID     : " + Long.toString(this.process.getProcesses().get(i).getPid()));
+				Log.$(Log.DEBUG, "  ----");
+			}
+		}
 	}
 }

@@ -3,10 +3,10 @@ package perfmon.agent.util;
 public class SingleProcessInfo{
 	private String user;
 	private String name;
-	private int pid;
+	private long pid;
 
 
-	public SingleProcessInfo(String u, String n, int p){
+	public SingleProcessInfo(String u, String n, long p){
 		this.user = u;
 		this.name = n;
 		this.pid = p;
@@ -15,5 +15,5 @@ public class SingleProcessInfo{
 
 	public String getUser()	{ return this.user; }
 	public String getName()	{ return this.name; }
-	public int getPid()	{ return this.pid; }
+	public long getPid()	{ return this.pid; }
 }

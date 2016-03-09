@@ -1,5 +1,5 @@
 import perfmon.agent.AgentMulti;
-import perfmon.agent.util.Config;
+import perfmon.util.Config;
 
 class Agent{
 	public static void main(String[] args){
