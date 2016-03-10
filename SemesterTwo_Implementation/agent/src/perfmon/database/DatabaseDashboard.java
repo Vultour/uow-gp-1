@@ -17,7 +17,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 			ResultSet rs = this.select(
 				new String[]{"node_id", "hostname"},
 				new String[]{"nodes"},
-				new String[]{},
+				null,
 				"LIMIT " + Integer.toString(limit)
 			);
 			while (rs.next()){

@@ -9,5 +9,11 @@ javac -cp $CLASSPATH src/perfmon/agent/base/*.java
 javac -cp $CLASSPATH src/perfmon/agent/*.java
 javac -cp $CLASSPATH src/*.java
 
-mkdir -p src/perfmon/dashboard/WEB-INF/classes/
+mkdir -p \
+	src/perfmon/dashboard/WEB-INF/classes/perfmon/ \
+	src/perfmon/dashboard/WEB-INF/classes/perfmon/util/ \
+	src/perfmon/dashboard/WEB-INF/classes/perfmon/database/ 
+cp -Rv src/perfmon/util/*.class src/perfmon/dashboard/WEB-INF/classes/perfmon/util/
+cp -Rv src/perfmon/database/*.class src/perfmon/dashboard/WEB-INF/classes/perfmon/database/
+
 javac -cp $CLASSPATH -d src/perfmon/dashboard/WEB-INF/classes/ src/perfmon/dashboard/Dashboard.java

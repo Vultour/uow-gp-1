@@ -4,4 +4,5 @@
 
 sudo cp -Rv src/perfmon/dashboard/WEB-INF/* /usr/share/tomcat/webapps/ROOT/WEB-INF/
 
-sudo systemctl restart tomcat
+sudo systemctl stop tomcat
+sudo systemctl start tomcat

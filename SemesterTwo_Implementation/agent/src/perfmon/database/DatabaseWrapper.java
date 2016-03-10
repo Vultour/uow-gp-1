@@ -48,6 +48,7 @@ public abstract class DatabaseWrapper{
 		}
 		query += " " + append;
 		try{
+			Log.$(Log.DEBUG, "Executing query - " + query);
 			return this.statement.executeQuery(query);
 		} catch (Exception e){
 			e.printStackTrace();

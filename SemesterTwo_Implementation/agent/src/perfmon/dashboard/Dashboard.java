@@ -13,7 +13,9 @@ import java.util.Hashtable;
 public class Dashboard extends HttpServlet{
 	private DatabaseDashboard database;
 
-	public void init() throws ServletException{
+	public void init() throws ServletException{}
+
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		this.database = new DatabaseDashboard(
 			Config.DATABASE_HOST,
 			Config.DATABASE_PORT,
@@ -21,17 +23,17 @@ public class Dashboard extends HttpServlet{
 			Config.DATABASE_USER,
 			Config.DATABASE_PASS
 		);
-	}
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.println("<h1>It probably doesn't work...</h1>");
-		//Hashtable<Integer, String> nodes = this.database.getNodes(10);
-		//for (Integer key: nodes.keySet()){ out.println(nodes.get(key) + ": " + key.toString()); }
-	}
+		Hashtable<Integer, String> nodes = this.database.getNodes(10);
+		for (Integer key: nodes.keySet()){ out.println(nodes.get(key) + ": " + key.toString()); }
 
-	public void destroy(){
+
 		this.database.close();
 	}
+
+	public void destroy(){}
 }
