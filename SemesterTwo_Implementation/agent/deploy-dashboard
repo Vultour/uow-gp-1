@@ -1,7 +1,5 @@
 #!/bin/bash
 
-./compile
-
 sudo cp -Rv src/perfmon/dashboard/WEB-INF/* /usr/share/tomcat/webapps/ROOT/WEB-INF/
 
 sudo systemctl stop tomcat
