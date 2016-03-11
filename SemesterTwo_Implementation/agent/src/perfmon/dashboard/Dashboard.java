@@ -10,6 +10,8 @@ import javax.servlet.http.*;
 
 import java.util.Hashtable;
 
+import com.google.gson.Gson;
+
 public class Dashboard extends HttpServlet{
 	private DatabaseDashboard database;
 
@@ -23,13 +25,19 @@ public class Dashboard extends HttpServlet{
 			Config.DATABASE_USER,
 			Config.DATABASE_PASS
 		);
-
-
-		response.setContentType("text/html");
+		java.util.Map<String, String[]> params = request.getParameterMap();
 		PrintWriter out = response.getWriter();
-		out.println("<h1>It probably doesn't work...</h1>");
-		Hashtable<Integer, String> nodes = this.database.getNodes(10);
-		for (Integer key: nodes.keySet()){ out.println(nodes.get(key) + ": " + key.toString()); }
+		Gson json = new Gson();
+		response.setContentType("text/json");
+
+
+		if (params.get("context") == null){
+			response.setContentType("text/plain");
+			out.println("No context specified.");
+			return;
+		} else if (params.get("context")[0].equals("nodes")){
+			out.println(json.toJson(this.database.getNodes(10)));
+		}
 
 
 		this.database.close();

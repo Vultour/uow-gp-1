@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CLASSPATH='.:src/:lib/:lib/sigar.jar:lib/mysql-connector-java.jar:/usr/share/tomcat/lib/tomcat-servlet-3.0-api.jar'
+CLASSPATH='.:src/:lib/:lib/sigar.jar:lib/mysql-connector-java.jar:lib/gson-2.6.2.jar:/usr/share/tomcat/lib/tomcat-servlet-3.0-api.jar'
 
 javac -cp $CLASSPATH src/perfmon/util/*.java
 javac -cp $CLASSPATH src/perfmon/agent/util/*.java

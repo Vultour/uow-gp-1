@@ -40,7 +40,8 @@ public class DatabaseAgent extends DatabaseWrapper{
 				"ORDER BY at DESC LIMIT 1"
 			);
 			if (rs.next()){
-				if (!rs.getString("operating_system").equals(s.getHostname())){ failure = true; }
+				Log.$(Log.DEBUG, "Retrieved system info, old OS='" + rs.getString("operating_system") + "', new OS='" + s.getOs() + "'");
+				if (!rs.getString("operating_system").equals(s.getOs())){ failure = true; }
 			} else{ failure = true; }
 
 			if (failure){
