@@ -120,6 +120,7 @@ abstract public class AgentBase{
 
 	private void getHdd(){
 		try{
+			this.hdd.getHardDrives().clear();
 			org.hyperic.sigar.FileSystem[] fs = this.sigar.getFileSystemList();
 			for (int i = 0; i < fs.length; i++){
 				try{
@@ -193,6 +194,7 @@ abstract public class AgentBase{
 
 	private void getProcesses(){
 		try{
+			this.process.getProcesses().clear();
 			long[] pids = this.sigar.getProcList();
 			for (int i = 0; i < pids.length; i++){
 				this.process.addProcess(
