@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../css/register.css">
+
+  <title>Register</title>
+
+</head>
+
+<body>
+
+  <div class="register-frame">
+    <div class="text"><h1>POS | Get started - it's free</h1></div>
+    <center>
+      <section class="form-container">
+        <form action="index.html" method="post" id="login">
+          <ul>
+
+            <div class="form-controls">
+              <li>
+                <label for="firstname"><i class="fa fa-pencil"></i></label>
+                <input type="textfield" name="firstname" placeholder="firstname" required>
+              </li>
+
+              <li>
+                <label for="surname"><i class="fa fa-pencil"></i></label>
+                <input type="textfield" name="surname" placeholder="surrname" required>
+              </li>
+
+              <li>
+                <label for="username"><i class="fa fa-user"></i></label>
+                <input type="textfield" name="username" placeholder="username" required>
+              </li>
+
+              <li>
+                <label for="password"><i class="fa fa-lock"></i></label>
+                <input type="password" name="password" placeholder="password" required>
+              </li>
+
+              <li>
+                <label for="email"><i class="fa fa-at"></i></label>
+                <input type="email" name="email" placeholder="email" required>
+              </li>
+            </div>
+          </ul>
+        </form>
+      </section>
+
+      <div class="button-container" id="loginButton">
+        <button type="submit" class="button" form="login">
+
+          <script type = "text/javascript">
+          document.getElementById('forgot').onclick = function() {
+            location.href = "../html/forgotPassword.html"
+          }
+          </script>
+
+          <span>
+            Got an account?
+          </span>
+        </button>
+
+        <button class="button" id="forgot">
+
+          <script type = "text/javascript">
+          document.getElementById('forgot').onclick = function() {
+            location.href = "../html/forgotPassword.html"
+          }
+          </script>
+
+          <span>
+            Forgot password?
+          </span>
+
+        </button>
+
+      </div>
+    </div>
+
+  </body>
+</html>

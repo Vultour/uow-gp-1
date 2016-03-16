@@ -39,19 +39,49 @@
       </form>
     </section>
 
-    <div class="button-container">
+    <div class="button-container" id="loginButton">
       <button type="submit" class="button" form="login">
+
+          <script type="text/javascript">
+            function validate(){
+              var x = document.forms["username"].value;
+              var y = document.forms["password"].value;
+
+              if (x == "1" && y == "1") {
+
+              }
+
+            }
+          </script>
+
         <span>
           Login
         </span>
       </button>
-      <button class="button">
+
+
+      <button class="button" id="forgot">
+
+        <script type = "text/javascript">
+          document.getElementById('forgot').onclick = function() {
+            location.href = "../html/forgotPassword.html"
+          }
+        </script>
+
         <span>
           Forgot password
         </span>
+
       </button>
 
-      <button class="button">
+      <button class="button" id="register">
+
+        <script type = "text/javascript">
+          document.getElementById('register').onclick = function() {
+            location.href = "../html/register.html"
+          }
+        </script>
+
         <span>
           Create Account
         </span>
@@ -64,14 +94,6 @@
     </div>
 
   </div>
-
-  <!-- <div class="sCContainer">
-    <button class="button" name="button">
-      <span>
-        Create Account
-      </span>
-    </button>
-  </div> -->
 
 </body>
 </html>

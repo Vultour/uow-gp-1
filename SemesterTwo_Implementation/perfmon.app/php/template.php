@@ -1,6 +1,6 @@
 <?php
 
-$pagename = 'P.O.S Login';
+$pagename = 'P.O.S. Login';
 
 echo '<title>'.$pagename.'</title>';
 

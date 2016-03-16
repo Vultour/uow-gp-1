@@ -83,18 +83,12 @@ header {
 .logo .workedup { width: 98px; height: 98px; position: absolute; z-index: 1; }
 
 /* menu */
-.menu { width: inherit; height: 45px; margin-top: 122px; background-color: #fff;}
-.menu ul li a { float: left; padding: 10px 30px 5px 25px; margin-top: -1px}
+.menu { width: inherit; height: 45px; margin-top: 122px; background-color: #fff; border-top: 1px solid #403d3d;}
+.menu ul li a { float: left; padding: 10px 30px 5px 25px; margin-top: -1px; }
 .menu ul { list-style: none; text-align: center; }
-.menu a {
-  text-decoration: none;
-  background-color: #fff;
-  border-left: 1px solid #403d3d;
-}
-.menu a:hover {padding-top: 9px; }
-.menu i {
-  padding-left: 5px;
-}
+.menu a { text-decoration: none; ; }
+.menu a:hover {padding-top: 9px;}
+.menu i { padding-left: 5px; }
 /* small screen styling */
 @media all and (min-width: 100px) {}
   .menu a { color: #403d3d; }
