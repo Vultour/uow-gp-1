@@ -13,7 +13,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 
 	public Hashtable<Integer, String> getNodes(int limit){
 		try{
-			Hashtable<Integer, String> result = new Hashtable<Integer, String>();
+			Hashtable<String, Integer> result = new Hashtable<String, Integer>();
 			ResultSet rs = this.select(
 				new String[]{"node_id", "hostname"},
 				new String[]{"nodes"},
@@ -21,7 +21,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 				"LIMIT " + Integer.toString(limit)
 			);
 			while (rs.next()){
-				result.put(rs.getInt("node_id"), rs.getString("hostname"));
+				result.put(rs.getString("hostname"), rs.getInt("node_id"));
 			}
 			return result;
 		} catch (Exception e){
