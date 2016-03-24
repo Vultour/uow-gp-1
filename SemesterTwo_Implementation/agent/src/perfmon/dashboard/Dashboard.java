@@ -44,6 +44,10 @@ public class Dashboard extends HttpServlet{
 			if (params.get("node") != null){
 				out.println(json.toJson(this.database.getNetadapters(Integer.parseInt(params.get("node")[0]))));
 			}
+		} else if (params.get("context")[0].equals("netusage")){
+			if (params.get("adapter") != null){
+				out.println(json.toJson(this.database.getNetusage(Integer.parseInt(params.get("adapter")[0]))));
+			}
 		}
 
 

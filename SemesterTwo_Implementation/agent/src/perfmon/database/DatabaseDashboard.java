@@ -47,7 +47,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 				"LIMIT 1"
 			);
 			if (rs.next()){
-				result.put("at", rs.getString("at"));
+				result.put("at", Long.toString(rs.getTimestamp("at").getTime() / 1000));
 				result.put("operating_system", rs.getString("operating_system"));
 				return result;
 			}
@@ -77,6 +77,39 @@ public class DatabaseDashboard extends DatabaseWrapper{
 				tmp.put("mac", rs.getString("mac"));
 				result.add(tmp);
 			}
+			return result;
+		} catch(Exception e){
+			e.printStackTrace();
+			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getNetadapters() - " + e.toString());
+			this.close();
+			System.exit(1);
+		}
+		return null;
+	}
+
+	public Hashtable<String, ArrayList<ArrayList<Long>>> getNetusage(int adapterId){
+		try{
+			Hashtable<String, ArrayList<ArrayList<Long>>> result = new Hashtable<String, ArrayList<ArrayList<Long>>>();
+			ArrayList<ArrayList<Long>> in = new ArrayList<ArrayList<Long>>();
+			ArrayList<ArrayList<Long>> out = new ArrayList<ArrayList<Long>>();
+			ResultSet rs = this.select(
+				new String[]{"*"},
+				new String[]{"net_usage"},
+				new String[]{"adapter_id = " + Integer.toString(adapterId)},
+				"ORDER BY at ASC"
+			);
+			while (rs.next()){
+				ArrayList<Long> tmpIn = new ArrayList<Long>();
+				ArrayList<Long> tmpOut = new ArrayList<Long>();
+				tmpIn.add(rs.getTimestamp("at").getTime() / 1000);
+				tmpOut.add(rs.getTimestamp("at").getTime() / 1000);
+				tmpIn.add(rs.getLong("ingress_bytes"));
+				tmpOut.add(rs.getLong("egress_bytes"));
+				in.add(tmpIn);
+				out.add(tmpOut);
+			}
+			result.put("ingress", in);
+			result.put("egress", out);
 			return result;
 		} catch(Exception e){
 			e.printStackTrace();
