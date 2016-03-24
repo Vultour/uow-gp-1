@@ -67,7 +67,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 				new String[]{"*"},
 				new String[]{"net_adapters"},
 				new String[]{"node_id = " + Integer.toString(nodeId)},
-				"LIMIT 1"
+				""
 			);
 			while (rs.next()){
 				Hashtable<String, String> tmp = new Hashtable<String, String>();
