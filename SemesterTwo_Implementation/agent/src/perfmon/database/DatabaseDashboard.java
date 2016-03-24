@@ -4,6 +4,7 @@ import perfmon.database.DatabaseWrapper;
 import perfmon.util.Log;
 
 import java.util.Hashtable;
+import java.util.ArrayList;
 import java.sql.ResultSet;
 
 public class DatabaseDashboard extends DatabaseWrapper{
@@ -11,9 +12,9 @@ public class DatabaseDashboard extends DatabaseWrapper{
 		super(host, port, database, username, password);
 	}
 
-	public Hashtable<String, Integer> getNodes(int limit){
+	public ArrayList<Hashtable<String, Integer>> getNodes(int limit){
 		try{
-			Hashtable<String, Integer> result = new Hashtable<String, Integer>();
+			ArrayList<Hashtable<String, String>> result = new ArrayList<Hashtable<String, String>>();
 			ResultSet rs = this.select(
 				new String[]{"node_id", "hostname"},
 				new String[]{"nodes"},
@@ -21,7 +22,10 @@ public class DatabaseDashboard extends DatabaseWrapper{
 				"LIMIT " + Integer.toString(limit)
 			);
 			while (rs.next()){
-				result.put(rs.getString("hostname"), rs.getInt("node_id"));
+				Hashtable<String, String> tmp = new Hastable<String, String>();
+				tmp.put("id", Integer.toString(rs.getInt("node_id")));
+				tmp.put("hostname", rs.getString("hostname"));
+				result.add(tmp):
 			}
 			return result;
 		} catch (Exception e){
