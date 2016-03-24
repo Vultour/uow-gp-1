@@ -11,7 +11,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 		super(host, port, database, username, password);
 	}
 
-	public Hashtable<Integer, String> getNodes(int limit){
+	public Hashtable<String, Integer> getNodes(int limit){
 		try{
 			Hashtable<String, Integer> result = new Hashtable<String, Integer>();
 			ResultSet rs = this.select(
