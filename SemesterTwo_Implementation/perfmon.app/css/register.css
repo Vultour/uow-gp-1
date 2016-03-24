@@ -87,6 +87,6 @@ input {
   transition: 0.5s;
 }
 
-.button:hover span { padding-right: 25px; }
+.button:hover span { padding-right: 15px; }
 
 .button:hover span:after { opacity: 1; right: 0; }
