@@ -36,4 +36,27 @@ public class DatabaseDashboard extends DatabaseWrapper{
 		}
 		return null;
 	}
+
+	public Hashtable<String, String> getSysinfo(int nodeId){
+		try{
+			Hashtable<String, String> result = new Hashtable<String, String>();
+			ResultSet rs = this.select(
+				new String[]{"*"},
+				new String[]{"system"},
+				new String[]{"node_id = " + Integer.toString(nodeId)},
+				"LIMIT 1"
+			);
+			if (rs.next()){
+				result.put("at", rs.getString("at"));
+				result.put("operating_system", rs.getString("operating_system"));
+				return result;
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+			Log.$(Log.FATAL, "Exception in DatabaseDashboard::getSystem() - " + e.toString());
+			this.close();
+			System.exit(1);
+		}
+		return null;
+	}
 }

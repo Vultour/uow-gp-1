@@ -34,9 +34,12 @@ public class Dashboard extends HttpServlet{
 		if (params.get("context") == null){
 			response.setContentType("text/plain");
 			out.println("No context specified.");
-			return;
 		} else if (params.get("context")[0].equals("nodes")){
 			out.println(json.toJson(this.database.getNodes(10)));
+		} else if (params.get("context")[0].equals("sysinfo")){
+			if (params.get("node") != null){
+				out.println(json.toJson(this.database.getSysinfo(Integer.parseInt(params.get("node")[0]))));
+			}
 		}
 
 
