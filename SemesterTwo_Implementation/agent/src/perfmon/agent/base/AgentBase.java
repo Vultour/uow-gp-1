@@ -32,7 +32,9 @@ abstract public class AgentBase{
 		this.process	= new ProcessInfo();
 
 		this.getSystem();
-		this.database	= new DatabaseAgent(this.system.getHostname(), dbAddress, Config.DATABASE_PORT, Config.DATABASE_NAME, dbUser, dbPassword);
+		if (!Config.AGENT_DRY_RUN){
+			this.database	= new DatabaseAgent(this.system.getHostname(), dbAddress, Config.DATABASE_PORT, Config.DATABASE_NAME, dbUser, dbPassword);
+		}
 
 		Runtime.getRuntime().addShutdownHook(new AgentShutdownThread(this){
 			public void run(){
@@ -56,8 +58,8 @@ abstract public class AgentBase{
 	public void shutdown(){
 		try{
 			Log.$(Log.INFO, "Agent shutting down");
-			this.database.close();
-			this.sigar.close();
+			if (this.database != null){ this.database.close(); }
+			if (this.sigar != null){ this.sigar.close(); }
 		} catch (Exception e){
 			e.printStackTrace();
 			Log.$(Log.FATAL, "Exception in AgentBase::shutdown()");
@@ -78,15 +80,17 @@ abstract public class AgentBase{
 			this.getNetwork();
 			this.getProcesses();
 
-			if (firstRun){
-				this.database.init(this.system, this.cpu);
-			}
+			if (!Config.AGENT_DRY_RUN){
+				if (firstRun){
+					this.database.init(this.system, this.cpu);
+				}
 
-			this.database.putCpu(this.cpu);
-			this.database.putMemory(this.memory);
-			this.database.putHdd(this.hdd);
-			if (!firstRun){ this.database.putNetwork(this.network); }
-			this.database.putProcess(this.process);
+				this.database.putCpu(this.cpu);
+				this.database.putMemory(this.memory);
+				this.database.putHdd(this.hdd);
+				if (!firstRun){ this.database.putNetwork(this.network); }
+				this.database.putProcess(this.process);
+			}
 
 			if (Config.AGENT_DEBUG){ this.printMetrics(); }
 			firstRun = false;
@@ -120,6 +124,7 @@ abstract public class AgentBase{
 
 	private void getHdd(){
 		try{
+			this.hdd.getHardDrives().clear();
 			org.hyperic.sigar.FileSystem[] fs = this.sigar.getFileSystemList();
 			for (int i = 0; i < fs.length; i++){
 				try{
@@ -193,6 +198,7 @@ abstract public class AgentBase{
 
 	private void getProcesses(){
 		try{
+			this.process.getProcesses().clear();
 			long[] pids = this.sigar.getProcList();
 			for (int i = 0; i < pids.length; i++){
 				this.process.addProcess(
