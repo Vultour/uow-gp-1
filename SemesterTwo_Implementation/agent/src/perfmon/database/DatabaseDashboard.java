@@ -59,4 +59,31 @@ public class DatabaseDashboard extends DatabaseWrapper{
 		}
 		return null;
 	}
+
+	public ArrayList<Hashtable<String, String>> getNetadapters(int nodeId){
+		try{
+			ArrayList<Hashtable<String, String>> result = new ArrayList<Hashtable<String, String>>();
+			ResultSet rs = this.select(
+				new String[]{"*"},
+				new String[]{"net_adapters"},
+				new String[]{"node_id = " + Integer.toString(nodeId)},
+				"LIMIT 1"
+			);
+			while (rs.next()){
+				Hashtable<String, String> tmp = new Hashtable<String, String>();
+				tmp.put("id", Integer.toString(rs.getInt("adapter_id")));
+				tmp.put("name", rs.getString("name"));
+				tmp.put("ip", rs.getString("ip"));
+				tmp.put("mac", rs.getString("mac"));
+				result.add(tmp);
+			}
+			return result;
+		} catch(Exception e){
+			e.printStackTrace();
+			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getNetadapters() - " + e.toString());
+			this.close();
+			System.exit(1);
+		}
+		return null;
+	}
 }
