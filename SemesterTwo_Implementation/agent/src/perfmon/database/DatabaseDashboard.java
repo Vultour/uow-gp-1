@@ -12,7 +12,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 		super(host, port, database, username, password);
 	}
 
-	public ArrayList<Hashtable<String, Integer>> getNodes(int limit){
+	public ArrayList<Hashtable<String, String>> getNodes(int limit){
 		try{
 			ArrayList<Hashtable<String, String>> result = new ArrayList<Hashtable<String, String>>();
 			ResultSet rs = this.select(
@@ -22,10 +22,10 @@ public class DatabaseDashboard extends DatabaseWrapper{
 				"LIMIT " + Integer.toString(limit)
 			);
 			while (rs.next()){
-				Hashtable<String, String> tmp = new Hastable<String, String>();
+				Hashtable<String, String> tmp = new Hashtable<String, String>();
 				tmp.put("id", Integer.toString(rs.getInt("node_id")));
 				tmp.put("hostname", rs.getString("hostname"));
-				result.add(tmp):
+				result.add(tmp);
 			}
 			return result;
 		} catch (Exception e){
