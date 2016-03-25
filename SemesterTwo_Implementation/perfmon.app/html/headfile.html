@@ -7,6 +7,9 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../css/global.css">
 
+    <script language="javascript" type="text/javascript" src="../js/jquery.js"></script>
+    <script src="../js/default.js"></script>
+
   </head>
 
 <body>
@@ -25,15 +28,19 @@
 
     <nav class="menu">
       <ul>
-        <li><a href="../html/summary.html">Summary<i class="fa fa-home"></i></a></li>
-        <li><a href="../html/network.html">Network<i class="fa fa-shopping-basket"></i></a></li>
-        <li><a href="../html/diagnostics.html">Diagnostics<i class="fa fa-user-plus"></i></a></li>
-        <li><a href="../html/feedback.html">Feedback<i class="fa fa-sign-in"></i></a></li>
+        <li><a href="../php/summary.php" id="mSummary">Summary<i class="fa fa-home"></i></a></li>
+        <li><a href="../php/network.php" id="mNetwork">Network<i class="fa fa-shopping-basket"></i></a></li>
+        <li><a href="../php/diagnostics.php" id="mDiagnostics">Diagnostics<i class="fa fa-user-plus"></i></a></li>
+        <li><a href="../php/feedback.php" id="mFeedback">Feedback<i class="fa fa-sign-in"></i></a></li>
       </ul>
+      <select id="node"></select>
     </nav>
+
 
   </header>
 
   <div class="wrap">
 
     <div class="main-content">
+
+      <div class="interior-content">

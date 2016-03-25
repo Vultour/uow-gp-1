@@ -1,0 +1,18 @@
+/*
+ *    CSS Document
+ *
+ *    @author  nmehta
+ *    @date 29th Jan 2016
+ *
+ *    Colours used:
+ *
+ *    background:      #f5f5f5
+ *    holo-blue:       #33b5e5  // main highlight
+ *    white:           #403d3d  // text and block
+ *
+ */
+ @charset "UTF-8";
+
+#cpu, #mem {
+  width: 100px; height: 100px; float: right; margin-top: -8.5%; margin-right: 70%;
+}

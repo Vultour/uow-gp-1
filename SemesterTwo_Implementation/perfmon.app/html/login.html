@@ -40,15 +40,17 @@
     </section>
 
     <div class="button-container" id="loginButton">
-      <button type="submit" class="button" form="login">
+      <button type="submit" class="button" form="login" id="login">
 
           <script type="text/javascript">
-            function validate(){
+            document.getElementById('login').onclick = function() {
               var x = document.forms["username"].value;
+              console.log(x);
               var y = document.forms["password"].value;
+              console.log(y);
 
-              if (x == "1" && y == "1") {
-
+              if (x.equals("admin") && y.equals("admin")) {
+                  window.location.href = "../php/summary.php"
               }
 
             }

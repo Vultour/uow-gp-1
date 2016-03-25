@@ -1,13 +1,13 @@
 <?php
 
-$pagename = 'Network';
+$pagename = 'Summary';
 
 echo '<title>'.$pagename.'</title>';
 
 include '../html/headfile.html';
 
 echo '<h2>'.$pagename.'</h2>';
-include '../html/network.html';
+include '../html/summary.html';
 
 include '../html/footfile.html';
 

@@ -1,19 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-
-  <title>Diagnostics</title>
-
-  <meta charset="utf-8" />
-
-  <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="../css/global.css">
-
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="../js/raphael.min.js"></script>
+    <script src="../js/justgage.js"></script>
+    <link rel="stylesheet" href="../css/summary.css">
 </head>
-<body>
 
-  
+<div class="cpu">
+    <h3>CPU Info</h3>
+    <p>Processor Manufacturer: </p>
+    <p>Processors Name: </p>
+    <p>Number of Cores: </p>
 
-</body>
-</html>
+    <div id="cpu"></div>
+
+
+    <script>
+        var cpu = new JustGage({
+            id: "cpu",
+            value: getRandomInt(0, 100),
+            min: 0,
+            max: 100,
+            label: "Usage (%)"
+        });
+    </script>
+
+</div>
+
+<div class="memory">
+    <h3>Memory Info</h3>
+
+    <p>Total: </p>
+    <p>Used: </p>
+
+    <div id="mem"></div>
+
+    <script>
+        var mem = new JustGage({
+            id: "mem",
+            value: getRandomInt(0, 100),
+            min: 0,
+            max: 100,
+            label: "Used"
+        });
+    </script>
+
+</div>
+
+<div class="hdd">
+
+    <h3>Main Hard Disk Info</h3>
+
+    <p>Capacity: </p>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      $("#storagecapacity").progressbar({
+        value: 74
+      });
+    });
+
+
+    </script>
+
+    <div id="storagecapacity"> </div>
+
+</div>
