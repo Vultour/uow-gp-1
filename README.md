@@ -54,3 +54,17 @@ not be tolerated. In the group summary (weekly) this will be reflected again.
 
 These guidelines will be updated with new rules as we continue so please notify
 **Niral** to add rules to them if the rest of the group sees them as worth using.
+
+
+# API Endpoints
+## List of monitored nodes
+http://tunnel-sdgp.nydus.eu:8080/dashboard?context=nodes
+
+## Node system info (OS only currently)
+http://tunnel-sdgp.nydus.eu:8080/dashboard?context=sysinfo&node=NODE_ID
+
+## List of network adapters on a node
+http://tunnel-sdgp.nydus.eu:8080/dashboard?context=netadapters&node=NODE_ID
+
+## Ingress & egress data of an adapter
+http://tunnel-sdgp.nydus.eu:8080/dashboard?context=netusage&adapter=ADAPTER_ID
