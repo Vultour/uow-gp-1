@@ -22,12 +22,10 @@ public class NetworkInterfaceInfo{
 	}
 
 	public void update(long rx, long tx){
-		//this.rx = rx - this.rxLast;
-		//this.tx = tx - this.txLast;
-		//this.rxLast = rx;
-		//this.txLast = tx;
-		this.rx = rx;
-		this.tx = tx;
+		this.rx = rx - this.rxLast;
+		this.tx = tx - this.txLast;
+		this.rxLast = rx;
+		this.txLast = tx;
 	}
 
 
