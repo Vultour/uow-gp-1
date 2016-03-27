@@ -47,7 +47,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 				"LIMIT 1"
 			);
 			if (rs.next()){
-				result.put("at", Long.toString(rs.getTimestamp("at").getTime() / 1000));
+				result.put("at", Long.toString(rs.getTimestamp("at").getTime()));
 				result.put("operating_system", rs.getString("operating_system"));
 				return result;
 			}
@@ -101,8 +101,8 @@ public class DatabaseDashboard extends DatabaseWrapper{
 			while (rs.next()){
 				ArrayList<Long> tmpIn = new ArrayList<Long>();
 				ArrayList<Long> tmpOut = new ArrayList<Long>();
-				tmpIn.add(rs.getTimestamp("at").getTime() / 1000);
-				tmpOut.add(rs.getTimestamp("at").getTime() / 1000);
+				tmpIn.add(rs.getTimestamp("at").getTime());
+				tmpOut.add(rs.getTimestamp("at").getTime());
 				tmpIn.add(rs.getLong("ingress_bytes") / 1000);
 				tmpOut.add(rs.getLong("egress_bytes") / 1000);
 				in.add(tmpIn);
@@ -138,7 +138,7 @@ public class DatabaseDashboard extends DatabaseWrapper{
 			return result;
 		} catch(Exception e){
 			e.printStackTrace();
-			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getNetadapters() - " + e.toString());
+			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getHardDrives() - " + e.toString());
 			this.close();
 			System.exit(1);
 		}
@@ -159,8 +159,8 @@ public class DatabaseDashboard extends DatabaseWrapper{
 			while (rs.next()){
 				ArrayList<Long> tmpTotal = new ArrayList<Long>();
 				ArrayList<Long> tmpUsed = new ArrayList<Long>();
-				tmpTotal.add(rs.getTimestamp("at").getTime() / 1000);
-				tmpUsed.add(rs.getTimestamp("at").getTime() / 1000);
+				tmpTotal.add(rs.getTimestamp("at").getTime());
+				tmpUsed.add(rs.getTimestamp("at").getTime());
 				tmpTotal.add(rs.getLong("total") / 1000);
 				tmpUsed.add(rs.getLong("used") / 1000);
 				total.add(tmpTotal);
@@ -171,7 +171,94 @@ public class DatabaseDashboard extends DatabaseWrapper{
 			return result;
 		} catch(Exception e){
 			e.printStackTrace();
-			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getNetadapters() - " + e.toString());
+			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getHardDriveUsage() - " + e.toString());
+			this.close();
+			System.exit(1);
+		}
+		return null;
+	}
+
+	public ArrayList<Hashtable<String, String>> getCpus(int nodeId){
+		try{
+			ArrayList<Hashtable<String, String>> result = new ArrayList<Hashtable<String, String>>();
+			ResultSet rs = this.select(
+				new String[]{"*"},
+				new String[]{"cpus"},
+				new String[]{"node_id = " + Integer.toString(nodeId)},
+				""
+			);
+			while (rs.next()){
+				Hashtable<String, String> tmp = new Hashtable<String, String>();
+				tmp.put("id", Integer.toString(rs.getInt("cpu_id")));
+				tmp.put("manufacturer", rs.getString("manufacturer"));
+				tmp.put("model", rs.getString("model"));
+				tmp.put("cores", Integer.toString(rs.getInt("cores")));
+				result.add(tmp);
+			}
+			return result;
+		} catch(Exception e){
+			e.printStackTrace();
+			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getCpus() - " + e.toString());
+			this.close();
+			System.exit(1);
+		}
+		return null;
+	}
+
+	public Hashtable<String, ArrayList<ArrayList<Double>>> getCpuUsage(int cpuId){
+		try{
+			Hashtable<String, ArrayList<ArrayList<Double>>> result = new Hashtable<String, ArrayList<ArrayList<Double>>>();
+			ArrayList<ArrayList<Double>> util = new ArrayList<ArrayList<Double>>();
+			ResultSet rs = this.select(
+				new String[]{"*"},
+				new String[]{"cpu_usage"},
+				new String[]{"cpu_id = " + Integer.toString(cpuId)},
+				"ORDER BY at ASC"
+			);
+			while (rs.next()){
+				ArrayList<Double> tmpUtil = new ArrayList<Double>();
+				tmpUtil.add(rs.getTimestamp("at").getTime() / 1.0);
+				tmpUtil.add(rs.getDouble("utilization"));
+				util.add(tmpUtil);
+			}
+			result.put("util", util);
+			return result;
+		} catch(Exception e){
+			e.printStackTrace();
+			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getCpuUsage() - " + e.toString());
+			this.close();
+			System.exit(1);
+		}
+		return null;
+	}
+
+	public Hashtable<String, ArrayList<ArrayList<Long>>> getMemory(int nodeId){
+		try{
+			Hashtable<String, ArrayList<ArrayList<Long>>> result = new Hashtable<String, ArrayList<ArrayList<Long>>>();
+			ArrayList<ArrayList<Long>> total = new ArrayList<ArrayList<Long>>();
+			ArrayList<ArrayList<Long>> used = new ArrayList<ArrayList<Long>>();
+			ResultSet rs = this.select(
+				new String[]{"*"},
+				new String[]{"memory_usage"},
+				new String[]{"node_id = " + Integer.toString(nodeId)},
+				"ORDER BY at ASC"
+			);
+			while (rs.next()){
+				ArrayList<Long> tmpTotal = new ArrayList<Long>();
+				ArrayList<Long> tmpUsed = new ArrayList<Long>();
+				tmpTotal.add(rs.getTimestamp("at").getTime());
+				tmpUsed.add(rs.getTimestamp("at").getTime());
+				tmpTotal.add(rs.getLong("total") / 1000);
+				tmpUsed.add(rs.getLong("used") / 1000);
+				total.add(tmpTotal);
+				used.add(tmpUsed);
+			}
+			result.put("total", total);
+			result.put("used", used);
+			return result;
+		} catch(Exception e){
+			e.printStackTrace();
+			Log.$(Log.FATAL, "Exception int DatabaseDashboard::getCpuUsage() - " + e.toString());
 			this.close();
 			System.exit(1);
 		}

@@ -56,6 +56,18 @@ public class Dashboard extends HttpServlet{
 			if (params.get("hdd") != null){
 				out.println(json.toJson(this.database.getHardDriveUsage(Integer.parseInt(params.get("hdd")[0]))));
 			}
+		} else if (params.get("context")[0].equals("cpus")){
+			if (params.get("node") != null){
+				out.println(json.toJson(this.database.getCpus(Integer.parseInt(params.get("node")[0]))));
+			}
+		} else if (params.get("context")[0].equals("cpuusage")){
+			if (params.get("cpu") != null){
+				out.println(json.toJson(this.database.getCpuUsage(Integer.parseInt(params.get("cpu")[0]))));
+			}
+		} else if (params.get("context")[0].equals("memory")){
+			if (params.get("node") != null){
+				out.println(json.toJson(this.database.getMemory(Integer.parseInt(params.get("node")[0]))));
+			}
 		}
 
 
