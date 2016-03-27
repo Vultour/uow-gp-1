@@ -28,6 +28,7 @@ public abstract class DatabaseWrapper{
 
 	public void close(){
 		try{
+			Log.$(Log.DEBUG, "Closing database connection");
 			if (this.statement != null){ this.statement.close(); }
 			if (this.connection != null){ this.connection.close(); }
 		} catch (Exception e){
@@ -79,6 +80,7 @@ public abstract class DatabaseWrapper{
 		query += append;
 
 		try{
+			Log.$(Log.DEBUG, "Executing query - " + query);
 			return this.statement.executeUpdate(query);
 		} catch (Exception e){
 			e.printStackTrace();
