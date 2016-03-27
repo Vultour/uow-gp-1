@@ -2,7 +2,7 @@ package perfmon.util;
 
 public class Config{
 	public static final boolean	AGENT_DEBUG		= true;
-	public static final boolean	AGENT_DRY_RUN		= true;
+	public static final boolean	AGENT_DRY_RUN		= false;
 	public static final int		AGENT_CYCLE_PAUSE	= 500;
 	public static final boolean	AGENT_DEBUG_EXPAND_HDD	= false;
 	public static final boolean	AGENT_DEBUG_EXPAND_NET	= false;

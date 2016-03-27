@@ -48,6 +48,14 @@ public class Dashboard extends HttpServlet{
 			if (params.get("adapter") != null){
 				out.println(json.toJson(this.database.getNetusage(Integer.parseInt(params.get("adapter")[0]))));
 			}
+		} else if (params.get("context")[0].equals("hdds")){
+			if (params.get("node") != null){
+				out.println(json.toJson(this.database.getHardDrives(Integer.parseInt(params.get("node")[0]))));
+			}
+		} else if (params.get("context")[0].equals("hddusage")){
+			if (params.get("hdd") != null){
+				out.println(json.toJson(this.database.getHardDriveUsage(Integer.parseInt(params.get("hdd")[0]))));
+			}
 		}
 
 
