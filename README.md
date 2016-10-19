@@ -2,15 +2,15 @@
 
 This is the repository for the Software Group Development Project.
 
-#GITHUB RULES
+# GITHUB RULES
 
 Please notify the group before you upload a change, make appropriate optional extended descriptions. If you do not understand how to use GitHub, contact either
 **Abubaker, Harsh, Martin** or **Niral**.
 
-#Additional Documents
+# Additional Documents
 [Architecture decisions [Google Docs]](https://docs.google.com/a/my.westminster.ac.uk/document/d/1GGT6WK9evuDKc2JazUJtfi_85MhwwiLHgL54npDbii4/edit?usp=sharing)
 
-#Team members (if you forget)
+# Team members (if you forget)
 **Abubaker** [Team Leader]
 
 **Harsh** [Software Engineer]
